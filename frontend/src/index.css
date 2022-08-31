@@ -1,13 +1,40 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html {
+    font-size: 62.5%;
+    box-sizing: border-box;
 }
+main {
+    min-height: 91vh;
+}
+footer {
+    background-color: #7b8a8b;
+}
+/* BBNavbar start */
+.bb-navbar-brand {
+    font-size: 2rem;
+    color: yellowgreen;
+}
+.bb-navbar-nav a {
+    font-size: 1.6rem;
+}
+.bb-navbar-nav.login-profile {
+    margin-left: auto;
+}
+.bb-navbar-dropdown {
+    font-size: 1.4rem;
+}
+/* BBNavbar end */
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Login screen start */
+.login-card {
+    padding: 1rem;
+    font-size: 1.4rem;
+    width: 30rem;
+    margin: auto;
 }
+/* Login screen end */
+
+/* BBMessage start */
+.bb-message {
+    font-size: 1.2rem;
+}
+/* BBMessage end */
