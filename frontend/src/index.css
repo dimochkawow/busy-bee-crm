@@ -38,3 +38,32 @@ footer {
     font-size: 1.2rem;
 }
 /* BBMessage end */
+
+/* BBEmployeePic start */
+.employee-pic {
+}
+/* BBEmployeePic end */
+
+/* Enroll employee start */
+.enroll-employee-form {
+    font-size: 1.8rem;
+    margin-top: 4rem;
+}
+.enroll-employee-form input {
+    font-size: 1.6rem;
+    width: 35rem;
+}
+/* Enroll employee end */
+
+/* Image Cropper start */
+.crop-wrapper {
+    position: relative;
+    height: 30rem;
+}
+.cropped-candidate {
+    max-width: 30rem;
+}
+.profile-pic-preview {
+    max-width: 10rem;
+}
+/* Image Cropper end */

@@ -4,15 +4,14 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
-import BBMessage from '../components/BBMessage'
-import { login } from '../store/loginSlice'
+import { login } from '../store/authSlice'
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const { currentUser, error } = useSelector((state) => state.login)
+    const { currentUser, error } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
-    const [searchParams, _] = useSearchParams()
+    const searchParams = useSearchParams()[0]
     const navigate = useNavigate()
     const redirect = searchParams.get('redirect')
         ? searchParams.get('redirect')
@@ -30,11 +29,10 @@ const Login = () => {
             setEmail('')
             setPassword('')
         }
-    }, [currentUser, navigate, redirect])
+    }, [currentUser, navigate, redirect, dispatch, error])
 
     return (
         <>
-            {error && <BBMessage variant='danger'>{error}</BBMessage>}
             <Card className='login-card'>
                 <Form>
                     <Form.Group className='mb-3' controlId='email'>

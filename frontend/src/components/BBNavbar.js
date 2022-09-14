@@ -2,16 +2,23 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { LinkContainer } from 'react-router-bootstrap'
-import { logout } from '../store/loginSlice'
+import { logout } from '../store/authSlice'
+import { show } from '../store/notificationSlice'
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
 
 const BBNavbar = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { currentUser } = useSelector((state) => state.login)
+    const { currentUser } = useSelector((state) => state.auth)
 
     const onLogout = () => {
         dispatch(logout())
+        dispatch(
+            show({
+                type: 'info',
+                text: `You've been logged out`,
+            })
+        )
     }
 
     useEffect(() => {
@@ -31,27 +38,46 @@ const BBNavbar = () => {
                 <Navbar.Toggle aria-controls='bb-navbar-nav' />
                 <Navbar.Collapse id='bb-navbar-nav'>
                     <Nav className='bb-navbar-nav'>
-                        <LinkContainer to='/customers'>
-                            <Nav.Link>Customers</Nav.Link>
-                        </LinkContainer>
-                        <LinkContainer to='/employees'>
-                            <Nav.Link>Employees</Nav.Link>
-                        </LinkContainer>
-                        <NavDropdown
-                            title='Entities'
-                            id='bb-navbar-dropdown-entities'
-                            className='bb-navbar-dropdown'
-                        >
-                            <LinkContainer to='/employees/new'>
-                                <NavDropdown.Item>Create new</NavDropdown.Item>
+                        {currentUser && (
+                            <LinkContainer to='/customers'>
+                                <Nav.Link>Customers</Nav.Link>
                             </LinkContainer>
-                            <LinkContainer to='/employees/search'>
-                                <NavDropdown.Item>Search</NavDropdown.Item>
+                        )}
+                        {currentUser?.isAdmin && (
+                            <NavDropdown
+                                title='Employees'
+                                id='bb-navbar-dropdown-entities'
+                                className='bb-navbar-dropdown'
+                            >
+                                <LinkContainer to='/employees/new'>
+                                    <NavDropdown.Item>Enroll</NavDropdown.Item>
+                                </LinkContainer>
+                                <LinkContainer to='/employees/search'>
+                                    <NavDropdown.Item>Search</NavDropdown.Item>
+                                </LinkContainer>
+                            </NavDropdown>
+                        )}
+                        {currentUser && (
+                            <NavDropdown
+                                title='Entities'
+                                id='bb-navbar-dropdown-entities'
+                                className='bb-navbar-dropdown'
+                            >
+                                <LinkContainer to='/employees/new'>
+                                    <NavDropdown.Item>
+                                        Create new
+                                    </NavDropdown.Item>
+                                </LinkContainer>
+                                <LinkContainer to='/employees/search'>
+                                    <NavDropdown.Item>Search</NavDropdown.Item>
+                                </LinkContainer>
+                            </NavDropdown>
+                        )}
+                        {currentUser && (
+                            <LinkContainer to='/leads'>
+                                <Nav.Link>Leads</Nav.Link>
                             </LinkContainer>
-                        </NavDropdown>
-                        <LinkContainer to='/leads'>
-                            <Nav.Link>Leads</Nav.Link>
-                        </LinkContainer>
+                        )}
                     </Nav>
                     <Nav className='bb-navbar-nav login-profile'>
                         {!currentUser && (
@@ -60,21 +86,24 @@ const BBNavbar = () => {
                             </LinkContainer>
                         )}
                         {currentUser && (
-                            <NavDropdown
-                                title={`${currentUser.firstName} ${currentUser.lastName}`}
-                                id='bb-navbar-dropdown-profile'
-                                className='bb-navbar-dropdown'
-                            >
-                                <LinkContainer to='/profile/settings'>
-                                    <NavDropdown.Item>
-                                        Settings
+                            <>
+                                {/* <BBEmployeePic src='/assets/Dmytro_Torianik.png' /> */}
+                                <NavDropdown
+                                    title={currentUser.fullName}
+                                    id='bb-navbar-dropdown-profile'
+                                    className='bb-navbar-dropdown'
+                                >
+                                    <LinkContainer to='/profile/settings'>
+                                        <NavDropdown.Item>
+                                            Settings
+                                        </NavDropdown.Item>
+                                    </LinkContainer>
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Item onClick={onLogout}>
+                                        Logout
                                     </NavDropdown.Item>
-                                </LinkContainer>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item onClick={onLogout}>
-                                    Logout
-                                </NavDropdown.Item>
-                            </NavDropdown>
+                                </NavDropdown>
+                            </>
                         )}
                     </Nav>
                 </Navbar.Collapse>

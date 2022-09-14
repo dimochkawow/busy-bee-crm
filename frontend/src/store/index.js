@@ -1,8 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import loginSlice from './loginSlice'
+import authSlice from './authSlice'
+import cropSlice from './cropSlice'
+import notificationSlice from './notificationSlice'
 
 export const store = configureStore({
     reducer: {
-        login: loginSlice.reducer,
+        auth: authSlice.reducer,
+        crop: cropSlice.reducer,
+        notification: notificationSlice.reducer,
     },
 })

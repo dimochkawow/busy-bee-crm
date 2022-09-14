@@ -1,16 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Alert } from 'react-bootstrap'
+import { dismiss } from '../store/notificationSlice'
 
-const BBMessage = ({ variant, children }) => {
+const BBMessage = ({ type, children }) => {
+    const dispatch = useDispatch()
+    const [show, setShow] = useState(true)
+
+    const variantMapping = {
+        error: 'danger',
+        info: 'warning',
+    }
+
+    const onClose = () => {
+        setShow(false)
+        dispatch(dismiss())
+    }
+
     return (
-        <Alert variant={variant} className='bb-message'>
+        <Alert
+            variant={variantMapping[type]}
+            className='bb-message'
+            dismissible
+            onClose={onClose}
+            show={show}
+        >
             {children}
         </Alert>
     )
 }
 
 BBMessage.defaultProps = {
-    variant: 'primary',
+    type: 'info',
 }
 
 export default BBMessage

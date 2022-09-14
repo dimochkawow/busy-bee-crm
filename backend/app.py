@@ -3,6 +3,7 @@ from fastapi import FastAPI, Depends, Request
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
+from starlette.middleware.cors import CORSMiddleware
 from typing import List, Tuple
 from config import Settings
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
@@ -27,8 +28,20 @@ def get_jwt_config() -> List[Tuple]:
 
 
 bb = FastAPI()
+
+
 motor_client = AsyncIOMotorClient(get_config().mongo_db_url)
 database = motor_client["bb_crm"]
+
+
+bb.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    max_age=-1 # TODO: remove this later!
+)
 
 
 @bb.exception_handler(AuthJWTException)
@@ -44,7 +57,9 @@ def get_database() -> AsyncIOMotorDatabase:
 
 
 from routers.auth import router as login_router
+from routers.employee import router as employee_router
 bb.include_router(login_router, prefix='/auth', tags=['auth'])
+bb.include_router(employee_router, prefix='/employees', tags=['employees'])
 
 
 @bb.get('/health')
