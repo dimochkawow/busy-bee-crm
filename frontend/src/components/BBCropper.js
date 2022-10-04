@@ -4,7 +4,7 @@ import { crop as cropAction } from '../store/cropSlice'
 import { Row, Col, Image as BootstrapImage } from 'react-bootstrap'
 import Cropper from 'react-easy-crop'
 
-const BBCropper = ({ imageSrc }) => {
+const BBCropper = ({ imageSrc, fileName }) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 })
     const [zoom, setZoom] = useState(1)
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
@@ -63,23 +63,39 @@ const BBCropper = ({ imageSrc }) => {
             ctx.putImageData(data, 0, 0)
 
             // As Base64 string
-            return canvas.toDataURL('image/jpeg')
+            return canvas.toDataURL('image/png')
 
             // As a blob
-            // return canvas.toBlob((file) => URL.createObjectURL(file), 'image/jpeg')
+            // const img = canvas.toBlob(
+            //     (file) => URL.createObjectURL(file),
+            //     'image/jpeg'
+            // )
+            // return img
         },
         []
     )
 
-    const showCroppedImage = useCallback(() => {
+    const dataUrlToFile = async (dataUrl, fileName) => {
+        const res = await fetch(dataUrl)
+        const blob = await res.blob()
+        return new File([blob], fileName, { type: 'image/png' })
+    }
+
+    const showCroppedImage = useCallback(async () => {
         try {
             const croppedImage = getCroppedImg(imageSrc, croppedAreaPixels)
+            const imageFile = await dataUrlToFile(croppedImage, fileName)
             setCroppedImage(croppedImage)
-            dispatch(cropAction(croppedImage))
+            dispatch(
+                cropAction({
+                    base64: croppedImage,
+                    imageFile: imageFile,
+                })
+            )
         } catch (e) {
             console.error(e)
         }
-    }, [imageSrc, croppedAreaPixels, getCroppedImg, dispatch])
+    }, [imageSrc, croppedAreaPixels, getCroppedImg, dispatch, fileName])
 
     return (
         <Row>

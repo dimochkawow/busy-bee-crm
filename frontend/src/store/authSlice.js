@@ -1,46 +1,7 @@
-import axios from 'axios'
+import axios from '../http/client'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { show } from './notificationSlice'
 import { LOGIN, REGISTER_EMPLOYEE } from '../http/urls'
-
-// export const updateLastLoginTime = createAsyncThunk(
-//     'auth/updateLastLoginTime',
-//     async (id, { getState }) => {
-//         const date = new Date().toISOString().split('.')[0].replace('T', ' ')
-//         const currentUser = getState().auth.currentUser
-//         await axios.patch(
-//             `${EMPLOYEES_BASE}/${id}`,
-//             {
-//                 lastLoginAt: date,
-//             },
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${currentUser.token}`,
-//                 },
-//             }
-//         )
-//     }
-// )
-
-const handleError = (reject, dispatch, err) => {
-    dispatch(
-        show({
-            type: 'error',
-            text: err,
-        })
-    )
-    return reject(err)
-}
-
-const handleSuccess = (dispatch, successText, data) => {
-    dispatch(
-        show({
-            type: 'info',
-            text: successText,
-        })
-    )
-    return data
-}
+import { handleSuccess, handleError } from './commonHandlers'
 
 export const login = createAsyncThunk(
     'auth/login',
@@ -96,8 +57,8 @@ const authSlice = createSlice({
     },
     reducers: {
         logout: (state) => {
-            state.currentUser = null
             localStorage.removeItem('currentUser')
+            state.currentUser = null
         },
     },
     extraReducers(builder) {
@@ -109,20 +70,24 @@ const authSlice = createSlice({
                 state.loading = false
                 state.currentUser = action.payload
                 localStorage.setItem(
+                    'expiresAt',
+                    new Date().getTime() + action.payload.expiresIn * 1000
+                )
+                localStorage.setItem(
                     'currentUser',
                     JSON.stringify(action.payload)
                 )
             })
-            .addCase(login.rejected, (state, action) => {
+            .addCase(login.rejected, (state) => {
                 state.loading = false
             })
             .addCase(register.pending, (state) => {
                 state.loading = true
             })
-            .addCase(register.fulfilled, (state, action) => {
+            .addCase(register.fulfilled, (state) => {
                 state.loading = false
             })
-            .addCase(register.rejected, (state, action) => {
+            .addCase(register.rejected, (state) => {
                 state.loading = false
             })
     },

@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { LinkContainer } from 'react-router-bootstrap'
 import { logout } from '../store/authSlice'
 import { show } from '../store/notificationSlice'
-import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
+import { Navbar, Container, Nav, NavDropdown, Image } from 'react-bootstrap'
+import { EMPLOYEE_PROFILE_DOWNLOAD } from '../http/urls'
 
 const BBNavbar = () => {
     const dispatch = useDispatch()
@@ -58,25 +59,30 @@ const BBNavbar = () => {
                             </NavDropdown>
                         )}
                         {currentUser && (
-                            <NavDropdown
-                                title='Entities'
-                                id='bb-navbar-dropdown-entities'
-                                className='bb-navbar-dropdown'
-                            >
-                                <LinkContainer to='/employees/new'>
-                                    <NavDropdown.Item>
-                                        Create new
-                                    </NavDropdown.Item>
+                            <>
+                                <NavDropdown
+                                    title='Entities'
+                                    id='bb-navbar-dropdown-entities'
+                                    className='bb-navbar-dropdown'
+                                >
+                                    <LinkContainer to='/employees/new'>
+                                        <NavDropdown.Item>
+                                            Create new
+                                        </NavDropdown.Item>
+                                    </LinkContainer>
+                                    <LinkContainer to='/employees/search'>
+                                        <NavDropdown.Item>
+                                            Search
+                                        </NavDropdown.Item>
+                                    </LinkContainer>
+                                </NavDropdown>
+                                <LinkContainer to='/deals'>
+                                    <Nav.Link>Deals</Nav.Link>
                                 </LinkContainer>
-                                <LinkContainer to='/employees/search'>
-                                    <NavDropdown.Item>Search</NavDropdown.Item>
+                                <LinkContainer to='/ledger'>
+                                    <Nav.Link>Ledger</Nav.Link>
                                 </LinkContainer>
-                            </NavDropdown>
-                        )}
-                        {currentUser && (
-                            <LinkContainer to='/leads'>
-                                <Nav.Link>Leads</Nav.Link>
-                            </LinkContainer>
+                            </>
                         )}
                     </Nav>
                     <Nav className='bb-navbar-nav login-profile'>
@@ -87,13 +93,26 @@ const BBNavbar = () => {
                         )}
                         {currentUser && (
                             <>
-                                {/* <BBEmployeePic src='/assets/Dmytro_Torianik.png' /> */}
+                                <Image
+                                    roundedCircle
+                                    src={
+                                        currentUser?.profilePicUrl
+                                            ? `${EMPLOYEE_PROFILE_DOWNLOAD.replace(
+                                                  ':id',
+                                                  currentUser._id
+                                              )}`
+                                            : `${process.env.PUBLIC_URL}/assets/default_avatar.jpeg`
+                                    }
+                                    style={{ maxWidth: '3rem' }}
+                                />
                                 <NavDropdown
                                     title={currentUser.fullName}
                                     id='bb-navbar-dropdown-profile'
                                     className='bb-navbar-dropdown'
                                 >
-                                    <LinkContainer to='/profile/settings'>
+                                    <LinkContainer
+                                        to={`/employees/${currentUser._id}/profile`}
+                                    >
                                         <NavDropdown.Item>
                                             Settings
                                         </NavDropdown.Item>

@@ -1,8 +1,10 @@
 from functools import lru_cache
-from fastapi import FastAPI, Depends, Request
+from fastapi import FastAPI, Depends, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
+from pydantic import ValidationError
 from starlette.middleware.cors import CORSMiddleware
 from typing import List, Tuple
 from config import Settings
@@ -47,8 +49,16 @@ bb.add_middleware(
 @bb.exception_handler(AuthJWTException)
 def authjwt_exception_handler(request: Request, exc: AuthJWTException):
     return JSONResponse(
-        status_code=exc.status_code,
+        status_code=status.HTTP_401_UNAUTHORIZED,
         content={"detail": exc.message}
+    )
+
+
+@bb.exception_handler(RequestValidationError)
+def validation_error_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content={"detail": exc.errors()[0].get('msg', '')}
     )
 
 

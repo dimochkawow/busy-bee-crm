@@ -3,11 +3,13 @@ import { createSlice } from '@reduxjs/toolkit'
 const cropSlice = createSlice({
     name: 'crop',
     initialState: {
-        croppedImage: '',
+        base64Image: '',
+        imageFile: '',
     },
     reducers: {
         crop: (state, action) => {
-            state.croppedImage = action.payload
+            state.croppedImage = action.payload.base64
+            state.imageFile = action.payload.imageFile
         },
     },
 })

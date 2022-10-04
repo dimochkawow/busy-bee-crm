@@ -4,11 +4,12 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from fastapi_jwt_auth import AuthJWT
 from models.auth import EmployeeCreate, EmployeeResponse, EmployeeDB
-from app import get_database, pwd_context
+from app import get_database, pwd_context, get_config
 from utils.db import EntityLoader
 
 
 router = APIRouter()
+
 
 @router.post("/register", response_model=EmployeeResponse, 
              status_code=status.HTTP_201_CREATED)
@@ -54,5 +55,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(OAuth2PasswordReq
     }
     token = authorize.create_access_token(subject=employee["email"],
                                           user_claims=claims)
-    employee["token"] = token
+    employee["token"] = token              
+    employee["expires_in"] = get_config().authjwt_access_token_expires
+    
     return EmployeeResponse(**employee)

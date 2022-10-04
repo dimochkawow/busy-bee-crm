@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { dismiss } from './store/notificationSlice'
+import { dismiss, show } from './store/notificationSlice'
+import { logout } from './store/authSlice'
 import BBNavbar from './components/BBNavbar'
 import BBFooter from './components/BBFooter'
 import BBMessage from './components/BBMessage'
@@ -11,9 +12,11 @@ import EnrollEmployee from './screens/EnrollEmployee'
 import SearchEmployee from './screens/SearchEmployee'
 import Dashboard from './screens/Dashboard'
 import Login from './screens/Login'
+import EmployeeProfile from './screens/EmployeeProfile'
 
 function App() {
     const dispatch = useDispatch()
+    const location = useLocation()
     const { message } = useSelector((state) => state.notification)
 
     useEffect(() => {
@@ -23,6 +26,22 @@ function App() {
             }, 3000)
         }
     }, [message, dispatch])
+
+    useEffect(() => {
+        const expiresAt = localStorage.getItem('expiresAt')
+            ? Number(localStorage.getItem('expiresAt'))
+            : -1
+
+        if (new Date().getTime() > expiresAt) {
+            dispatch(logout())
+            dispatch(
+                show({
+                    type: 'error',
+                    text: 'Your access token expired. Please re-login',
+                })
+            )
+        }
+    }, [location, dispatch])
 
     return (
         <>
@@ -35,9 +54,13 @@ function App() {
                         </BBMessage>
                     )}
                     <Routes>
-                        <Route path='/login' element={<Login />} />
+                        <Route path='/login' element={<Login />} exact />
                         <Route path='/' element={<Dashboard />} />
                         <Route path='/customers' element={<Customers />} />
+                        <Route
+                            path='/employees/:id/profile'
+                            element={<EmployeeProfile />}
+                        />
                         <Route
                             path='/employees/new'
                             element={<EnrollEmployee />}

@@ -1,26 +1,16 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
-// import Image from 'react-bootstrap/Image'
 import Button from 'react-bootstrap/Button'
 import FormCheck from 'react-bootstrap/FormCheck'
-// import BBCropper from '../components/BBCropper'
-// import BBModal from '../components/BBModal'
+import BBSpinner from '../components/BBSpinner'
 import { register } from '../store/authSlice'
 
 const EnrollEmployee = () => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
-
-    const [imageSrc, setImageSrc] = useState(null)
-    const [showCropper, setShowCropper] = useState(false)
-    const [showPreview, setShowPreview] = useState(false)
-    const fileUploadRef = useRef()
-    const { croppedImage } = useSelector((state) => state.crop)
-    const { lastEmployeeEnrolled } = useSelector((state) => state.auth)
+    const { loading } = useSelector((state) => state.auth)
 
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
@@ -42,36 +32,9 @@ const EnrollEmployee = () => {
         dispatch(register(newEmployee))
     }
 
-    const readFile = (file) => {
-        return new Promise((resolve) => {
-            const reader = new FileReader()
-            reader.addEventListener('load', () => resolve(reader.result), false)
-            reader.readAsDataURL(file)
-        })
-    }
-
-    const onCropComplete = () => {
-        setShowPreview(true)
-        setShowCropper(false)
-    }
-
-    const onCropCancel = () => {
-        setShowCropper(false)
-        fileUploadRef.current.value = null
-    }
-
-    const onFileChange = async (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0]
-            let imageDataUrl = await readFile(file)
-            setImageSrc(imageDataUrl)
-            setShowCropper(true)
-            setShowPreview(false)
-        }
-    }
-
     return (
         <>
+            {loading && <BBSpinner />}
             <h2>Enroll an employee</h2>
             <Form onSubmit={enroll} className='enroll-employee-form'>
                 <Row>
@@ -147,46 +110,6 @@ const EnrollEmployee = () => {
                                 />
                             </Col>
                         </Form.Group>
-                        {/* <Form.Group
-                            as={Row}
-                            className='mb-3'
-                            controlId='profilePic'
-                        >
-                            <Form.Label column sm={3}>
-                                Profile picture
-                            </Form.Label>
-                            <Col sm={9}>
-                                <Form.Control
-                                    type='file'
-                                    accept='image/*'
-                                    onChange={onFileChange}
-                                    ref={fileUploadRef}
-                                />
-                                <input
-                                    type='hidden'
-                                    value={croppedImage}
-                                    name='profilePic'
-                                />
-                            </Col>
-                        </Form.Group> */}
-                        {/* {croppedImage && showPreview && (
-                            <Form.Group
-                                as={Row}
-                                className='mb-3 align-items-baseline'
-                                controlId='profilePicPreview'
-                            >
-                                <Form.Label column sm={3}>
-                                    Preview
-                                </Form.Label>
-                                <Col sm={9}>
-                                    <Image
-                                        roundedCircle
-                                        src={croppedImage}
-                                        className='profile-pic-preview'
-                                    />
-                                </Col>
-                            </Form.Group>
-                        )} */}
                     </Col>
                     <Col md={6}>
                         <h3 className='mb-5'>Preferences</h3>
@@ -234,19 +157,6 @@ const EnrollEmployee = () => {
                         </Form.Group>
                     </Col>
                 </Row>
-                {/* <Row>
-                    <Col md={4}>
-                        <BBModal
-                            title='Choose area to crop'
-                            show={showCropper}
-                            onCancel={onCropCancel}
-                            onSave={onCropComplete}
-                        >
-                            <BBCropper imageSrc={imageSrc} />
-                        </BBModal>
-                    </Col>
-                </Row> */}
-
                 <Row>
                     <Col md={12}>
                         <Button type='submit' size='lg' variant='warning'>

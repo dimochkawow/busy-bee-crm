@@ -18,6 +18,7 @@ footer {
 }
 .bb-navbar-nav.login-profile {
     margin-left: auto;
+    align-items: center;
 }
 .bb-navbar-dropdown {
     font-size: 1.4rem;
@@ -67,3 +68,112 @@ footer {
     max-width: 10rem;
 }
 /* Image Cropper end */
+
+/* BBSnipper start */
+.spinner-container {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+}
+/* BBSnipper end */
+
+/* Employee Profile screen start */
+.employee-profile-pic-upload {
+    margin-bottom: 2rem;
+}
+.employee-profile-pic-upload button {
+    font-size: 1.4rem;
+    width: 30rem;
+}
+.employee-profile-page .profile-pic {
+    max-width: 30rem;
+    margin-bottom: 1rem;
+}
+.employee-profile-page .action-button {
+    width: 30rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.6rem;
+}
+.employee-profile-form label,
+.employee-profile-form input {
+    font-size: 1.6rem;
+}
+.employee-profile-form .change-password-btn {
+    font-size: 1.4rem;
+    width: 14rem;
+    margin-left: auto;
+    margin-right: 10px;
+}
+.employee-profile-form input[type='checkbox'] {
+    margin-left: -1.8rem;
+    margin-top: 10px;
+}
+.employee-remove-dialog .modal-dialog {
+    width: 40rem;
+}
+.employee-remove-dialog .modal-title {
+    font-size: 1.6rem;
+}
+.employee-remove-dialog .modal-body {
+    font-size: 1.2rem;
+}
+.employee-remove-dialog .modal-footer button {
+    font-size: 1.2rem;
+}
+/* Employee Profile screen end */
+
+/* BBAutocomplete start */
+.bb-autocomplete .spinner-container {
+    left: 40%;
+    top: 60%;
+}
+.autocomplete-search-input {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+}
+.autocomplete-employee-row {
+    margin-bottom: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.autocomplete-employee-row img {
+    max-width: 2rem;
+}
+.autocomplete-employee-row:hover {
+    background-color: #deeded;
+    cursor: pointer;
+}
+.autocomplete-employee-row span {
+    font-size: 1.4rem;
+}
+/* BBAutocomplete end */
+
+/* Employee Search screen start */
+.employee-search-page .profile-pic {
+    max-width: 20rem;
+}
+.employee-search-page .employee-info {
+    padding-left: 30px;
+    font-size: 1.6rem;
+}
+.employee-search-page .employee-info .attribute-entry {
+    margin-bottom: 0.5rem;
+}
+.employee-search-page .employee-info .attribute-label {
+    font-weight: 600;
+    width: 8rem;
+    display: inline-block;
+    text-align: right;
+    margin-right: 5px;
+}
+.employee-search-page .open-profile-icon {
+    font-size: 1.8rem;
+}
+.employee-search-page .actions-container {
+    text-align: end;
+}
+.employee-search-page .open-profile-icon:hover {
+    cursor: pointer;
+    color: blue;
+}
+/* Employee Search screen end */

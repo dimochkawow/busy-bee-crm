@@ -1,31 +1,8 @@
 from datetime import datetime
 from fastapi_camelcase import CamelModel
-from pydantic import Field, validator
+from pydantic import Field, validator, root_validator
 from typing import Optional
-from bson import ObjectId
-
-
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
-        return ObjectId(v)
-
-    @classmethod
-    def __modify_schema__(cls, field_schema):
-        field_schema.update(type="string")
-
-
-class MongoBaseModel(CamelModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    
-    class Config:
-        json_encoders = { ObjectId: str }
+from models.base import MongoBaseModel
 
 
 class EmployeeBase(CamelModel):
@@ -34,6 +11,8 @@ class EmployeeBase(CamelModel):
     password_expired: Optional[bool] = False
     is_admin: Optional[bool] = False
     is_active: Optional[bool] = False
+    profile_pic_url: Optional[str]
+    last_login_at: Optional[datetime]
 
 
 class EmployeeCreate(EmployeeBase):
@@ -41,13 +20,16 @@ class EmployeeCreate(EmployeeBase):
     confirm_password: str
 
 
+class EmployeeDB(MongoBaseModel, EmployeeBase):
+    hashed_password: str
+
+
 class EmployeeResponse(MongoBaseModel, EmployeeBase):
     token: Optional[str]
-    profile_pic_url: Optional[str]
-    last_login_at: Optional[datetime]
+    expires_in: Optional[int]
 
 
-class EmployeeUpdate(EmployeeResponse):
+class EmployeeUpdate(MongoBaseModel, EmployeeBase):
     full_name: Optional[str]
     email: Optional[str]
     
@@ -56,5 +38,17 @@ class EmployeeUpdate(EmployeeResponse):
         return datetime.strftime(value, "%Y-%m-%d %H:%M:%S")
 
 
-class EmployeeDB(EmployeeResponse):
-    hashed_password: str
+class ChangePasswordPayload(CamelModel):
+    oldPassword: str
+    newPassword: str
+    confirmPassword: str
+    
+    @root_validator
+    def validate_password_change(cls, values):
+        if values.get('oldPassword') == values.get('newPassword'):
+            raise ValueError("New password must be different")
+        
+        if values.get('newPassword') != values.get('confirmPassword'):
+            raise ValueError("Password and confirmation must match")
+        
+        return values

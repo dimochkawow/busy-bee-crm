@@ -1,0 +1,2 @@
+class BBAWSIntegrationException(Exception):
+    pass

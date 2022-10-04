@@ -4,12 +4,13 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
+import BBSpinner from '../components/BBSpinner'
 import { login } from '../store/authSlice'
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const { currentUser, error } = useSelector((state) => state.auth)
+    const { currentUser, loading } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
     const searchParams = useSearchParams()[0]
     const navigate = useNavigate()
@@ -29,10 +30,11 @@ const Login = () => {
             setEmail('')
             setPassword('')
         }
-    }, [currentUser, navigate, redirect, dispatch, error])
+    }, [currentUser, navigate, redirect, dispatch])
 
     return (
         <>
+            {loading && <BBSpinner />}
             <Card className='login-card'>
                 <Form>
                     <Form.Group className='mb-3' controlId='email'>
